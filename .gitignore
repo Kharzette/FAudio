@@ -4,6 +4,7 @@
 *.dll
 .vs/
 obj/
+build/
 Debug/
 Release/
 *.csproj.user
