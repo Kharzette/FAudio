@@ -1,5 +1,5 @@
-SET(SDL2_INCLUDE_DIRS "/media/kharzette/Zeû_Pater/Code/Gits/GrogLibsC/SDL/include" "/media/kharzette/Zeû_Pater/Code/Gits/GrogLibsC/SDL/include/SDL3")
-SET(SDL2_LIBRARIES "/media/kharzette/Zeû_Pater/Code/Gits/GrogLibsC/SDL/build/libSDL3.so")
+SET(SDL2_INCLUDE_DIRS "/mnt/SkyFather/Code/Gits/GrogLibsC/SDL/include" "/mnt/SkyFather/Code/Gits/GrogLibsC/SDL/include/SDL3")
+SET(SDL2_LIBRARIES "/mnt/SkyFather/Code/Gits/GrogLibsC/SDL/build/libSDL3.so")
 
 # CMake Project for FAudio
 # Written by @NeroBurner
@@ -67,7 +67,7 @@ if(INSTALL_MINGW_DEPENDENCIES)
 endif()
 
 # Source lists
-add_library(FAudio STATIC
+add_library(FAudio
 	# Public Headers
 	include/F3DAudio.h
 	include/FACT3D.h
