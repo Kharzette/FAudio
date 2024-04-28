@@ -11,15 +11,11 @@ jobs:
       with:
         submodules: true
 
-    - name: Set up Homebrew
-      id: set-up-homebrew
-      uses: Homebrew/actions/setup-homebrew@master
-
     - name: Install dependencies
       run: |
+        sudo apt-add-repository ppa:hrzhu/sdl2-backport
         sudo apt-get update
-        sudo apt-get install ninja-build
-        brew install sdl2
+        sudo apt-get install ninja-build libsdl2-dev
 
     - name: CMake configure (Debug)
       run: cmake -B debug -G Ninja . -DCMAKE_BUILD_TYPE=Debug
@@ -81,7 +77,7 @@ jobs:
       run: |
         if (-Not (Test-Path C:\SDL))
         {
-            Invoke-WebRequest "https://github.com/libsdl-org/SDL/releases/download/release-$env:SDL_VERSION/SDL2-devel-$env:SDL_VERSION-VC.zip" -o C:\SDL.zip
+            Invoke-WebRequest "https://github.com/libsdl-org/SDL/releases/download/release-$env:SDL_VERSION/SDL2-devel-$env:SDL_VERSION-VC.zip" -OutFile C:\SDL.zip
             Expand-Archive C:\SDL.zip -DestinationPath C:\
         }
 
@@ -154,17 +150,19 @@ jobs:
       run: cmake --build releasewine
 
   freebsd:
-    runs-on: macos-12
+    runs-on: ubuntu-latest
     name: FreeBSD
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: true
     - name: Build
-      uses: vmactions/freebsd-vm@v0
+      uses: cross-platform-actions/action@v0.19.1
       with:
-        usesh: true
-        prepare: pkg install -y cmake ninja sdl2
+        operating_system: freebsd
+        version: '13.2'
         run: |
+          sudo pkg update
+          sudo pkg install -y cmake ninja sdl2
           cmake -B build -G Ninja .
           cmake --build build --verbose -- -j`sysctl -n hw.ncpu`

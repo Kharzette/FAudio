@@ -9,8 +9,9 @@ project(FAudio C)
 # Options
 option(BUILD_UTILS "Build utils/ folder" OFF)
 option(BUILD_TESTS "Build tests/ folder for unit tests to be executed on the host against FAudio" OFF)
+option(BUILD_SDL3 "Build against SDL 3.0" OFF)
 if(WIN32)
-option(PLATFORM_WIN32 "Enable native Win32 platform instead of SDL2" OFF)
+option(PLATFORM_WIN32 "Enable native Win32 platform instead of SDL" OFF)
 endif()
 option(XNASONG "Build with XNA_Song.c" ON)
 option(LOG_ASSERTIONS "Bind FAudio_assert to log, instead of platform's assert" OFF)
@@ -31,8 +32,8 @@ endif()
 
 # Version
 SET(LIB_MAJOR_VERSION "0")
-SET(LIB_MINOR_VERSION "22")
-SET(LIB_REVISION "12")
+SET(LIB_MINOR_VERSION "24")
+SET(LIB_REVISION "04")
 SET(LIB_VERSION "${LIB_MAJOR_VERSION}.${LIB_MINOR_VERSION}.${LIB_REVISION}")
 
 # Build Type
@@ -82,6 +83,7 @@ add_library(FAudio
 	src/FAudio_internal.h
 	src/stb.h
 	src/stb_vorbis.h
+	src/qoa_decoder.h
 	# Source Files
 	src/F3DAudio.c
 	src/FACT3D.c
@@ -100,19 +102,25 @@ add_library(FAudio
 	src/FAudio_internal_simd.c
 	src/FAudio_operationset.c
 	src/FAudio_platform_sdl2.c
+	src/FAudio_platform_sdl3.c
 	src/FAudio_platform_win32.c
 	# Optional source files
 	src/XNA_Song.c
 )
 
 if(PLATFORM_WIN32)
-	target_link_libraries(FAudio PRIVATE -ldxguid -luuid -lwinmm -lole32 -ladvapi32 -luser32 -lmfplat -lmfreadwrite -lmfuuid -lpropsys)
+	target_link_libraries(FAudio PRIVATE dxguid uuid winmm ole32 advapi32 user32 mfplat mfreadwrite mfuuid propsys)
 	target_compile_definitions(FAudio PUBLIC FAUDIO_WIN32_PLATFORM)
 	target_compile_definitions(FAudio PRIVATE HAVE_WMADEC=1)
 	set(PLATFORM_CFLAGS "-DFAUDIO_WIN32_PLATFORM")
 	set(XNASONG OFF)
 else()
-	set(PLATFORM_CFLAGS)
+	if(BUILD_SDL3)
+		target_compile_definitions(FAudio PUBLIC FAUDIO_SDL3_PLATFORM)
+		set(PLATFORM_CFLAGS "-DFAUDIO_SDL3_PLATFORM")
+	else()
+		set(PLATFORM_CFLAGS)
+	endif()
 endif()
 
 # Only disable DebugConfiguration in release builds
@@ -152,9 +160,41 @@ if(DUMP_VOICES)
 	target_compile_definitions(FAudio PRIVATE FAUDIO_DUMP_VOICES)
 endif()
 
-# SDL2 Dependency
+# SDL Dependency
 if (PLATFORM_WIN32)
-	message(STATUS "not using SDL2")
+	message(STATUS "not using SDL")
+elseif (BUILD_SDL3)
+	if (DEFINED SDL3_INCLUDE_DIRS AND DEFINED SDL3_LIBRARIES)
+		message(STATUS "using pre-defined SDL3 variables SDL3_INCLUDE_DIRS and SDL3_LIBRARIES")
+		target_include_directories(FAudio PUBLIC "$<BUILD_INTERFACE:${SDL3_INCLUDE_DIRS}>")
+		target_link_libraries(FAudio PUBLIC ${SDL3_LIBRARIES})
+		if(INSTALL_MINGW_DEPENDENCIES)
+			install_shared_libs(${SDL3_LIBRARIES} DESTINATION bin NO_INSTALL_SYMLINKS)
+		endif()
+	else()
+		# Only try to autodetect if both SDL3 variables aren't explicitly set
+		find_package(SDL3 CONFIG)
+		if (TARGET SDL3::SDL3)
+			message(STATUS "using TARGET SDL3::SDL3")
+			target_link_libraries(FAudio PUBLIC SDL3::SDL3)
+			if(INSTALL_MINGW_DEPENDENCIES)
+				install_shared_libs(TARGETS SDL3::SDL3 DESTINATION bin NO_INSTALL_SYMLINKS REQUIRED)
+			endif()
+		elseif (TARGET SDL3)
+			message(STATUS "using TARGET SDL3")
+			target_link_libraries(FAudio PUBLIC SDL3)
+			if(INSTALL_MINGW_DEPENDENCIES)
+				install_shared_libs(TARGETS SDL3 DESTINATION bin NO_INSTALL_SYMLINKS REQUIRED)
+			endif()
+		else()
+			message(STATUS "no TARGET SDL3::SDL3, or SDL3, using variables")
+			target_include_directories(FAudio PUBLIC "$<BUILD_INTERFACE:${SDL3_INCLUDE_DIRS}>")
+			target_link_libraries(FAudio PUBLIC ${SDL3_LIBRARIES})
+			if(INSTALL_MINGW_DEPENDENCIES)
+				install_shared_libs(${SDL3_LIBRARIES} DESTINATION bin NO_INSTALL_SYMLINKS)
+			endif()
+		endif()
+	endif()
 elseif (DEFINED SDL2_INCLUDE_DIRS AND DEFINED SDL2_LIBRARIES)
 	message(STATUS "using pre-defined SDL2 variables SDL2_INCLUDE_DIRS and SDL2_LIBRARIES")
 	target_include_directories(FAudio PUBLIC "$<BUILD_INTERFACE:${SDL2_INCLUDE_DIRS}>")
@@ -252,6 +292,10 @@ if(BUILD_UTILS)
 		utils/testvolumemeter/testvolumemeter.cpp
 	)
 	target_link_libraries(testvolumemeter PRIVATE uicommon wavs)
+	add_executable(voicepool
+		utils/voicepool/voicepool.cpp
+	)
+	target_link_libraries(voicepool PRIVATE uicommon wavs)
 endif()
 
 # define install directories
@@ -271,6 +315,7 @@ endif()
 # tests/ Folder
 if(BUILD_TESTS)
 	add_executable(faudio_tests tests/xaudio2.c)
+	target_compile_definitions(faudio_tests PRIVATE _DEFAULT_SOURCE _BSD_SOURCE)
 	target_link_libraries(faudio_tests PRIVATE FAudio)
 endif()
 
@@ -295,6 +340,15 @@ install(
 include(cmake/JoinPaths.cmake)
 join_paths(FAUDIO_PKGCONF_LIBDIR "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(FAUDIO_PKGCONF_INCLUDEDIR "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
+
+if(NOT PLATFORM_WIN32)
+	if(BUILD_SDL3)
+		set(PC_REQUIRES_PRIVATE "Requires.private: sdl3")
+	else()
+		set(PC_REQUIRES_PRIVATE "Requires.private: sdl2")
+	endif()
+endif()
+
 configure_file(
 	"${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}.pc.in"
 	${PROJECT_BINARY_DIR}/generated/${PROJECT_NAME}.pc
