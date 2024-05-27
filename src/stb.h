@@ -203,17 +203,6 @@ CREDITS
 
 #define STB_VERSION  1
 
-/* In addition to trimming out all the stuff FAudio does not use, we are also
- * binding various stdlib functions stb.h uses to FAudio's stdlib.
- * -flibit
- */
-#ifndef FAUDIO_WIN32_PLATFORM
-#ifdef memcpy /* Thanks Apple! */
-#undef memcpy
-#endif
-#define memcpy FAudio_memcpy
-#endif
-
 //////////////////////////////////////////////////////////////////////////////
 //
 //                         Miscellany

@@ -128,7 +128,7 @@ uint32_t FAPOBase_GetRegistrationProperties(
 	*ppRegistrationProperties = (FAPORegistrationProperties*) fapo->pMalloc(
 		sizeof(FAPORegistrationProperties)
 	);
-	FAudio_memcpy(
+	memcpy(
 		*ppRegistrationProperties,
 		fapo->m_pRegistrationProperties,
 		sizeof(FAPORegistrationProperties)
@@ -403,7 +403,7 @@ void FAPOBase_SetParameters(
 	);
 
 	/* Copy to what will eventually be the next parameter update */
-	FAudio_memcpy(
+	memcpy(
 		fapo->m_pCurrentParametersInternal,
 		pParameters,
 		ParameterByteSize
@@ -416,7 +416,7 @@ void FAPOBase_GetParameters(
 	uint32_t ParameterByteSize
 ) {
 	/* Copy what's current as of the last Process */
-	FAudio_memcpy(
+	memcpy(
 		pParameters,
 		fapo->m_pCurrentParameters,
 		ParameterByteSize

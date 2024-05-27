@@ -130,7 +130,7 @@ uint32_t FAPOFXMasteringLimiter_Initialize(
 	uint32_t DataByteSize
 ) {
 	#define INITPARAMS(offset) \
-		FAudio_memcpy( \
+		memcpy( \
 			fapo->base.m_pParameterBlocks + DataByteSize * offset, \
 			pData, \
 			DataByteSize \
@@ -192,7 +192,7 @@ uint32_t FAPOFXCreateMasteringLimiter(
 	{
 		FAudio_zero(params, sizeof(FAPOFXMasteringLimiterParameters) * 3);
 		#define INITPARAMS(offset) \
-			FAudio_memcpy( \
+			memcpy( \
 				params + sizeof(FAPOFXMasteringLimiterParameters) * offset, \
 				&fxdefault, \
 				sizeof(FAPOFXMasteringLimiterParameters) \
@@ -205,18 +205,18 @@ uint32_t FAPOFXCreateMasteringLimiter(
 	else
 	{
 		FAudio_assert(InitDataByteSize == sizeof(FAPOFXMasteringLimiterParameters));
-		FAudio_memcpy(params, pInitData, InitDataByteSize);
-		FAudio_memcpy(params + InitDataByteSize, pInitData, InitDataByteSize);
-		FAudio_memcpy(params + (InitDataByteSize * 2), pInitData, InitDataByteSize);
+		memcpy(params, pInitData, InitDataByteSize);
+		memcpy(params + InitDataByteSize, pInitData, InitDataByteSize);
+		memcpy(params + (InitDataByteSize * 2), pInitData, InitDataByteSize);
 	}
 
 	/* Initialize... */
-	FAudio_memcpy(
+	memcpy(
 		&FXMasteringLimiterProperties_LEGACY.clsid,
 		&FAPOFX_CLSID_FXMasteringLimiter_LEGACY,
 		sizeof(FAudioGUID)
 	);
-	FAudio_memcpy(
+	memcpy(
 		&FXMasteringLimiterProperties.clsid,
 		&FAPOFX_CLSID_FXMasteringLimiter,
 		sizeof(FAudioGUID)

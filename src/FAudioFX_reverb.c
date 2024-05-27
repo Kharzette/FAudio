@@ -1350,7 +1350,7 @@ uint32_t FAudioFXReverb_Initialize(
 	uint32_t DataByteSize
 ) {
 	#define INITPARAMS(offset) \
-		FAudio_memcpy( \
+		memcpy( \
 			fapo->base.m_pParameterBlocks + DataByteSize * offset, \
 			pData, \
 			DataByteSize \
@@ -1450,7 +1450,7 @@ static inline void FAudioFXReverb_CopyBuffer(
 	/* equal channel count */
 	if (fapo->inBlockAlign == fapo->outBlockAlign)
 	{
-		FAudio_memcpy(
+		memcpy(
 			buffer_out,
 			buffer_in,
 			fapo->inBlockAlign * frames_in
@@ -1687,7 +1687,7 @@ uint32_t FAudioCreateReverbWithCustomAllocatorEXT(
 	result->apiVersion = 7;
 
 	/* Initialize... */
-	FAudio_memcpy(
+	memcpy(
 		&ReverbProperties.clsid,
 		&FAudioFX_CLSID_AudioReverb,
 		sizeof(FAudioGUID)
@@ -1857,7 +1857,7 @@ uint32_t FAudioCreateReverb9WithCustomAllocatorEXT(
 	result->apiVersion = 9;
 
 	/* Initialize... */
-	FAudio_memcpy(
+	memcpy(
 		&ReverbProperties.clsid,
 		&FAudioFX_CLSID_AudioReverb,
 		sizeof(FAudioGUID)

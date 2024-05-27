@@ -169,7 +169,7 @@ static inline void FACT_INTERNAL_ReadFile(
 	/* Copy the subregion that we actually care about, if applicable */
 	if (usePacketBuffer)
 	{
-		FAudio_memcpy(dst, *packetBuffer + offPacket, len);
+		memcpy(dst, *packetBuffer + offPacket, len);
 	}
 }
 
@@ -1329,7 +1329,7 @@ void FACT_INTERNAL_ActivateEvent(
 	{
 		FAudio_assert(trackInst->activeWave.wave == NULL);
 		FAudio_assert(trackInst->upcomingWave.wave != NULL);
-		FAudio_memcpy(
+		memcpy(
 			&trackInst->activeWave,
 			&trackInst->upcomingWave,
 			sizeof(trackInst->activeWave)
@@ -1584,7 +1584,7 @@ uint8_t FACT_INTERNAL_UpdateSound(FACTSoundInstance *sound, uint32_t timestamp)
 		if (waveState & FACT_STATE_STOPPED)
 		{
 			FACTWave_Destroy(sound->tracks[i].activeWave.wave);
-			FAudio_memcpy(
+			memcpy(
 				&sound->tracks[i].activeWave,
 				&sound->tracks[i].upcomingWave,
 				sizeof(sound->tracks[i].activeWave)
@@ -2259,7 +2259,7 @@ uint32_t FACT_INTERNAL_ParseAudioEngine(
 	{
 		memsize = FAudio_strlen((char*) ptr) + 1; /* Dastardly! */
 		pEngine->categoryNames[i] = (char*) pEngine->pMalloc(memsize);
-		FAudio_memcpy(pEngine->categoryNames[i], ptr, memsize);
+		memcpy(pEngine->categoryNames[i], ptr, memsize);
 		ptr += memsize;
 	}
 
@@ -2281,7 +2281,7 @@ uint32_t FACT_INTERNAL_ParseAudioEngine(
 	{
 		memsize = FAudio_strlen((char*) ptr) + 1; /* Dastardly! */
 		pEngine->variableNames[i] = (char*) pEngine->pMalloc(memsize);
-		FAudio_memcpy(pEngine->variableNames[i], ptr, memsize);
+		memcpy(pEngine->variableNames[i], ptr, memsize);
 		ptr += memsize;
 	}
 
@@ -2613,7 +2613,7 @@ uint32_t FACT_INTERNAL_ParseSoundBank(
 	/* SoundBank Name */
 	memsize = FAudio_strlen((char*) ptr) + 1; /* Dastardly! */
 	sb->name = (char*) pEngine->pMalloc(memsize);
-	FAudio_memcpy(sb->name, ptr, memsize);
+	memcpy(sb->name, ptr, memsize);
 	ptr += 64;
 
 	/* WaveBank Name data */
@@ -2627,7 +2627,7 @@ uint32_t FACT_INTERNAL_ParseSoundBank(
 	{
 		memsize = FAudio_strlen((char*) ptr) + 1;
 		sb->wavebankNames[i] = (char*) pEngine->pMalloc(memsize);
-		FAudio_memcpy(sb->wavebankNames[i], ptr, memsize);
+		memcpy(sb->wavebankNames[i], ptr, memsize);
 		ptr += 64;
 	}
 
@@ -3028,7 +3028,7 @@ uint32_t FACT_INTERNAL_ParseSoundBank(
 		{
 			memsize = FAudio_strlen((char*) ptr) + 1;
 			sb->cueNames[i] = (char*) pEngine->pMalloc(memsize);
-			FAudio_memcpy(sb->cueNames[i], ptr, memsize);
+			memcpy(sb->cueNames[i], ptr, memsize);
 			ptr += memsize;
 		}
 	}
@@ -3179,7 +3179,7 @@ uint32_t FACT_INTERNAL_ParseWaveBank(
 	wb->entryCount = wbinfo.dwEntryCount;
 	memsize = FAudio_strlen(wbinfo.szBankName) + 1;
 	wb->name = (char*) pEngine->pMalloc(memsize);
-	FAudio_memcpy(wb->name, wbinfo.szBankName, memsize);
+	memcpy(wb->name, wbinfo.szBankName, memsize);
 	memsize = sizeof(FACTWaveBankEntry) * wbinfo.dwEntryCount;
 	wb->entries = (FACTWaveBankEntry*) pEngine->pMalloc(memsize);
 	FAudio_zero(wb->entries, memsize);

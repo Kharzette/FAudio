@@ -193,7 +193,7 @@ void FAudioFXVolumeMeter_GetParameters(
 	/* Copy what's current as of the last Process */
 	if (pParameters->pPeakLevels != NULL)
 	{
-		FAudio_memcpy(
+		memcpy(
 			pParameters->pPeakLevels,
 			levels->pPeakLevels,
 			fapo->channels * sizeof(float)
@@ -201,7 +201,7 @@ void FAudioFXVolumeMeter_GetParameters(
 	}
 	if (pParameters->pRMSLevels != NULL)
 	{
-		FAudio_memcpy(
+		memcpy(
 			pParameters->pRMSLevels,
 			levels->pRMSLevels,
 			fapo->channels * sizeof(float)
@@ -246,7 +246,7 @@ uint32_t FAudioCreateVolumeMeterWithCustomAllocatorEXT(
 	FAudio_zero(params, sizeof(FAudioFXVolumeMeterLevels) * 3);
 
 	/* Initialize... */
-	FAudio_memcpy(
+	memcpy(
 		&VolumeMeterProperties.clsid,
 		&FAudioFX_CLSID_AudioVolumeMeter,
 		sizeof(FAudioGUID)

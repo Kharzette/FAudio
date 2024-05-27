@@ -121,12 +121,12 @@ uint32_t FACTAudioEngine_GetRendererDetails(
 		nRendererIndex,
 		&deviceDetails
 	);
-	FAudio_memcpy(
+	memcpy(
 		pRendererDetails->rendererID,
 		deviceDetails.DeviceID,
 		sizeof(int16_t) * 0xFF
 	);
-	FAudio_memcpy(
+	memcpy(
 		pRendererDetails->displayName,
 		deviceDetails.DisplayName,
 		sizeof(int16_t) * 0xFF
@@ -146,7 +146,7 @@ uint32_t FACTAudioEngine_GetFinalMixFormat(
 	FAudioWaveFormatExtensible *pFinalMixFormat
 ) {
 	FAudio_PlatformLockMutex(pEngine->apiLock);
-	FAudio_memcpy(
+	memcpy(
 		pFinalMixFormat,
 		&pEngine->audio->mixFormat,
 		sizeof(FAudioWaveFormatExtensible)
@@ -1745,7 +1745,7 @@ uint32_t FACTWaveBank_GetWaveProperties(
 
 	if (pWaveBank->waveBankNames)
 	{
-		FAudio_memcpy(
+		memcpy(
 			pWaveProperties->friendlyName,
 			&pWaveBank->waveBankNames[nWaveIndex * 64],
 			sizeof(pWaveProperties->friendlyName)
@@ -2736,7 +2736,7 @@ uint32_t FACTCue_SetMatrixCoefficients(
 	/* Local storage */
 	pCue->srcChannels = uSrcChannelCount;
 	pCue->dstChannels = uDstChannelCount;
-	FAudio_memcpy(
+	memcpy(
 		pCue->matrixCoefficients,
 		pMatrixCoefficients,
 		sizeof(float) * uSrcChannelCount * uDstChannelCount

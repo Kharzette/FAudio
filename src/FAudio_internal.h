@@ -128,7 +128,6 @@ extern void FAudio_Log(char const *msg);
 #define FAudio_dealloca(x) SDL_stack_free(x)
 #define FAudio_zero(ptr, size) SDL_memset(ptr, '\0', size)
 #define FAudio_memset(ptr, val, size) SDL_memset(ptr, val, size)
-#define FAudio_memcpy(dst, src, size) SDL_memcpy(dst, src, size)
 #define FAudio_memmove(dst, src, size) SDL_memmove(dst, src, size)
 #define FAudio_memcmp(ptr1, ptr2, size) SDL_memcmp(ptr1, ptr2, size)
 
@@ -840,7 +839,7 @@ static inline void WriteWaveFormatExtensible(
 	fmt->Format.cbSize = sizeof(FAudioWaveFormatExtensible) - sizeof(FAudioWaveFormatEx);
 	fmt->Samples.wValidBitsPerSample = 32;
 	fmt->dwChannelMask = GetMask(fmt->Format.nChannels);
-	FAudio_memcpy(&fmt->SubFormat, subformat, sizeof(FAudioGUID));
+	memcpy(&fmt->SubFormat, subformat, sizeof(FAudioGUID));
 }
 
 /* Resampling */

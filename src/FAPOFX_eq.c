@@ -130,7 +130,7 @@ uint32_t FAPOFXEQ_Initialize(
 	uint32_t DataByteSize
 ) {
 	#define INITPARAMS(offset) \
-		FAudio_memcpy( \
+		memcpy( \
 			fapo->base.m_pParameterBlocks + DataByteSize * offset, \
 			pData, \
 			DataByteSize \
@@ -202,7 +202,7 @@ uint32_t FAPOFXCreateEQ(
 	{
 		FAudio_zero(params, sizeof(FAPOFXEQParameters) * 3);
 		#define INITPARAMS(offset) \
-			FAudio_memcpy( \
+			memcpy( \
 				params + sizeof(FAPOFXEQParameters) * offset, \
 				&fxdefault, \
 				sizeof(FAPOFXEQParameters) \
@@ -215,18 +215,18 @@ uint32_t FAPOFXCreateEQ(
 	else
 	{
 		FAudio_assert(InitDataByteSize == sizeof(FAPOFXEQParameters));
-		FAudio_memcpy(params, pInitData, InitDataByteSize);
-		FAudio_memcpy(params + InitDataByteSize, pInitData, InitDataByteSize);
-		FAudio_memcpy(params + (InitDataByteSize * 2), pInitData, InitDataByteSize);
+		memcpy(params, pInitData, InitDataByteSize);
+		memcpy(params + InitDataByteSize, pInitData, InitDataByteSize);
+		memcpy(params + (InitDataByteSize * 2), pInitData, InitDataByteSize);
 	}
 
 	/* Initialize... */
-	FAudio_memcpy(
+	memcpy(
 		&FXEQProperties_LEGACY.clsid,
 		&FAPOFX_CLSID_FXEQ_LEGACY,
 		sizeof(FAudioGUID)
 	);
-	FAudio_memcpy(
+	memcpy(
 		&FXEQProperties.clsid,
 		&FAPOFX_CLSID_FXEQ,
 		sizeof(FAudioGUID)

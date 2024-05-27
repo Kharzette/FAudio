@@ -728,7 +728,7 @@ static inline float *FAudio_INTERNAL_ProcessEffectChain(
 			voice->effects.desc[i].InitialState
 		);
 
-		FAudio_memcpy(&srcParams, &dstParams, sizeof(dstParams));
+		memcpy(&srcParams, &dstParams, sizeof(dstParams));
 	}
 
 	*samples = dstParams.ValidFrameCount;
@@ -1380,7 +1380,7 @@ static void FAUDIOCALL FAudio_INTERNAL_GenerateOutput(FAudio *audio, float *outp
 
 		if (effectOut != output)
 		{
-			FAudio_memcpy(
+			memcpy(
 				output,
 				effectOut,
 				totalSamples * audio->master->outputChannels * sizeof(float)
@@ -1478,7 +1478,7 @@ void FAudio_INTERNAL_AllocEffectChain(
 	voice->effects.desc = (FAudioEffectDescriptor*) voice->audio->pMalloc(
 		voice->effects.count * sizeof(FAudioEffectDescriptor)
 	);
-	FAudio_memcpy(
+	memcpy(
 		voice->effects.desc,
 		pEffectChain->pEffectDescriptors,
 		voice->effects.count * sizeof(FAudioEffectDescriptor)
@@ -1689,7 +1689,7 @@ void FAudio_INTERNAL_DecodePCM32F(
 	uint32_t samples
 ) {
 	LOG_FUNC_ENTER(voice->audio)
-	FAudio_memcpy(
+	memcpy(
 		decodeCache,
 		((float*) buffer->pAudioData) + (
 			voice->src.curBufferOffset * voice->src.format->nChannels

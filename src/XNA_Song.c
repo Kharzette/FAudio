@@ -36,11 +36,6 @@
 #ifdef memset /* Thanks, Apple! */
 #undef memset
 #endif
-#define memset FAudio_memset
-#ifdef memcpy /* Thanks, Apple! */
-#undef memcpy
-#endif
-#define memcpy FAudio_memcpy
 #define memcmp FAudio_memcmp
 
 #define pow FAudio_pow

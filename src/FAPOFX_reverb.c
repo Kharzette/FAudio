@@ -130,7 +130,7 @@ uint32_t FAPOFXReverb_Initialize(
 	uint32_t DataByteSize
 ) {
 	#define INITPARAMS(offset) \
-		FAudio_memcpy( \
+		memcpy( \
 			fapo->base.m_pParameterBlocks + DataByteSize * offset, \
 			pData, \
 			DataByteSize \
@@ -192,7 +192,7 @@ uint32_t FAPOFXCreateReverb(
 	{
 		FAudio_zero(params, sizeof(FAPOFXReverbParameters) * 3);
 		#define INITPARAMS(offset) \
-			FAudio_memcpy( \
+			memcpy( \
 				params + sizeof(FAPOFXReverbParameters) * offset, \
 				&fxdefault, \
 				sizeof(FAPOFXReverbParameters) \
@@ -205,18 +205,18 @@ uint32_t FAPOFXCreateReverb(
 	else
 	{
 		FAudio_assert(InitDataByteSize == sizeof(FAPOFXReverbParameters));
-		FAudio_memcpy(params, pInitData, InitDataByteSize);
-		FAudio_memcpy(params + InitDataByteSize, pInitData, InitDataByteSize);
-		FAudio_memcpy(params + (InitDataByteSize * 2), pInitData, InitDataByteSize);
+		memcpy(params, pInitData, InitDataByteSize);
+		memcpy(params + InitDataByteSize, pInitData, InitDataByteSize);
+		memcpy(params + (InitDataByteSize * 2), pInitData, InitDataByteSize);
 	}
 
 	/* Initialize... */
-	FAudio_memcpy(
+	memcpy(
 		&FXReverbProperties_LEGACY.clsid,
 		&FAPOFX_CLSID_FXReverb_LEGACY,
 		sizeof(FAudioGUID)
 	);
-	FAudio_memcpy(
+	memcpy(
 		&FXReverbProperties.clsid,
 		&FAPOFX_CLSID_FXReverb,
 		sizeof(FAudioGUID)

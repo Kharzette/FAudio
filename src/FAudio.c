@@ -312,19 +312,19 @@ uint32_t FAudio_CreateSourceVoice(
 		fmtex->dwChannelMask = 0;
 		if (pSourceFormat->wFormatTag == FAUDIO_FORMAT_PCM)
 		{
-			FAudio_memcpy(&fmtex->SubFormat, &DATAFORMAT_SUBTYPE_PCM, sizeof(FAudioGUID));
+			memcpy(&fmtex->SubFormat, &DATAFORMAT_SUBTYPE_PCM, sizeof(FAudioGUID));
 		}
 		else if (pSourceFormat->wFormatTag == FAUDIO_FORMAT_IEEE_FLOAT)
 		{
-			FAudio_memcpy(&fmtex->SubFormat, &DATAFORMAT_SUBTYPE_IEEE_FLOAT, sizeof(FAudioGUID));
+			memcpy(&fmtex->SubFormat, &DATAFORMAT_SUBTYPE_IEEE_FLOAT, sizeof(FAudioGUID));
 		}
 		else if (pSourceFormat->wFormatTag == FAUDIO_FORMAT_WMAUDIO2)
 		{
-			FAudio_memcpy(&fmtex->SubFormat, &DATAFORMAT_SUBTYPE_WMAUDIO2, sizeof(FAudioGUID));
+			memcpy(&fmtex->SubFormat, &DATAFORMAT_SUBTYPE_WMAUDIO2, sizeof(FAudioGUID));
 		}
 		else if (pSourceFormat->wFormatTag == FAUDIO_FORMAT_WMAUDIO3)
 		{
-			FAudio_memcpy(&fmtex->SubFormat, &DATAFORMAT_SUBTYPE_WMAUDIO3, sizeof(FAudioGUID));
+			memcpy(&fmtex->SubFormat, &DATAFORMAT_SUBTYPE_WMAUDIO3, sizeof(FAudioGUID));
 		}
 		(*ppSourceVoice)->src.format = &fmtex->Format;
 	}
@@ -336,7 +336,7 @@ uint32_t FAudio_CreateSourceVoice(
 
 		/* Copy what we can, ideally the sizes match! */
 		size_t cbSize = sizeof(FAudioWaveFormatEx) + pSourceFormat->cbSize;
-		FAudio_memcpy(
+		memcpy(
 			fmtex,
 			pSourceFormat,
 			FAudio_min(cbSize, sizeof(FAudioADPCMWaveFormat))
@@ -364,7 +364,7 @@ uint32_t FAudio_CreateSourceVoice(
 
 		/* Copy what we can, ideally the sizes match! */
 		size_t cbSize = sizeof(FAudioWaveFormatEx) + pSourceFormat->cbSize;
-		FAudio_memcpy(
+		memcpy(
 			fmtex,
 			pSourceFormat,
 			FAudio_min(cbSize, sizeof(FAudioXMA2WaveFormat))
@@ -387,7 +387,7 @@ uint32_t FAudio_CreateSourceVoice(
 		(*ppSourceVoice)->src.format = (FAudioWaveFormatEx*) audio->pMalloc(
 			sizeof(FAudioWaveFormatEx) + pSourceFormat->cbSize
 		);
-		FAudio_memcpy(
+		memcpy(
 			(*ppSourceVoice)->src.format,
 			pSourceFormat,
 			sizeof(FAudioWaveFormatEx) + pSourceFormat->cbSize
@@ -945,7 +945,7 @@ void FAudio_SetDebugConfiguration(
 
 	LOG_API_ENTER(audio)
 
-	FAudio_memcpy(
+	memcpy(
 		&audio->debug,
 		pDebugConfiguration,
 		sizeof(FAudioDebugConfiguration)
@@ -1204,7 +1204,7 @@ uint32_t FAudioVoice_SetOutputVoices(
 	voice->sends.pSends = (FAudioSendDescriptor*) voice->audio->pMalloc(
 		pSendList->SendCount * sizeof(FAudioSendDescriptor)
 	);
-	FAudio_memcpy(
+	memcpy(
 		voice->sends.pSends,
 		pSendList->pSends,
 		pSendList->SendCount * sizeof(FAudioSendDescriptor)
@@ -1240,7 +1240,7 @@ uint32_t FAudioVoice_SetOutputVoices(
 
 		FAudio_assert(voice->outputChannels > 0 && voice->outputChannels < 9);
 		FAudio_assert(outChannels > 0 && outChannels < 9);
-		FAudio_memcpy(
+		memcpy(
 			voice->sendCoefficients[i],
 			FAUDIO_INTERNAL_MATRIX_DEFAULTS[voice->outputChannels - 1][outChannels - 1],
 			voice->outputChannels * outChannels * sizeof(float)
@@ -1435,8 +1435,8 @@ uint32_t FAudioVoice_SetEffectChain(
 		srcFmt.Format.cbSize = sizeof(FAudioWaveFormatExtensible) - sizeof(FAudioWaveFormatEx);
 		srcFmt.Samples.wValidBitsPerSample = srcFmt.Format.wBitsPerSample;
 		srcFmt.dwChannelMask = 0;
-		FAudio_memcpy(&srcFmt.SubFormat, &DATAFORMAT_SUBTYPE_IEEE_FLOAT, sizeof(FAudioGUID));
-		FAudio_memcpy(&dstFmt, &srcFmt, sizeof(srcFmt));
+		memcpy(&srcFmt.SubFormat, &DATAFORMAT_SUBTYPE_IEEE_FLOAT, sizeof(FAudioGUID));
+		memcpy(&dstFmt, &srcFmt, sizeof(srcFmt));
 
 		for (i = 0; i < pEffectChain->EffectCount; i += 1)
 		{
@@ -1471,7 +1471,7 @@ uint32_t FAudioVoice_SetEffectChain(
 			 * effect will be the destination. Repeat until no
 			 * effects left.
 			 */
-			FAudio_memcpy(&srcFmt, &dstFmt, sizeof(srcFmt));
+			memcpy(&srcFmt, &dstFmt, sizeof(srcFmt));
 		}
 
 		FAudio_INTERNAL_FreeEffectChain(voice);
@@ -1618,7 +1618,7 @@ uint32_t FAudioVoice_SetEffectParameters(
 		);
 		voice->effects.parameterSizes[EffectIndex] = ParametersByteSize;
 	}
-	FAudio_memcpy(
+	memcpy(
 		voice->effects.parameters[EffectIndex],
 		pParameters,
 		ParametersByteSize
@@ -1683,7 +1683,7 @@ uint32_t FAudioVoice_SetFilterParametersEXT(
 
 	FAudio_PlatformLockMutex(voice->filterLock);
 	LOG_MUTEX_LOCK(voice->audio, voice->filterLock)
-	FAudio_memcpy(
+	memcpy(
 		&voice->filter,
 		pParameters,
 		sizeof(FAudioFilterParametersEXT)
@@ -1732,7 +1732,7 @@ void FAudioVoice_GetFilterParametersEXT(
 
 	FAudio_PlatformLockMutex(voice->filterLock);
 	LOG_MUTEX_LOCK(voice->audio, voice->filterLock)
-	FAudio_memcpy(
+	memcpy(
 		pParameters,
 		&voice->filter,
 		sizeof(FAudioFilterParametersEXT)
@@ -1827,7 +1827,7 @@ uint32_t FAudioVoice_SetOutputFilterParametersEXT(
 	}
 
 	/* Set the filter parameters, finally. */
-	FAudio_memcpy(
+	memcpy(
 		&voice->sendFilter[i],
 		pParameters,
 		sizeof(FAudioFilterParametersEXT)
@@ -1910,7 +1910,7 @@ void FAudioVoice_GetOutputFilterParametersEXT(
 	}
 
 	/* Set the filter parameters, finally. */
-	FAudio_memcpy(
+	memcpy(
 		pParameters,
 		&voice->sendFilter[i],
 		sizeof(FAudioFilterParametersEXT)
@@ -2041,7 +2041,7 @@ uint32_t FAudioVoice_SetChannelVolumes(
 	FAudio_PlatformLockMutex(voice->volumeLock);
 	LOG_MUTEX_LOCK(voice->audio, voice->volumeLock)
 
-	FAudio_memcpy(
+	memcpy(
 		voice->channelVolume,
 		pVolumes,
 		sizeof(float) * Channels
@@ -2070,7 +2070,7 @@ void FAudioVoice_GetChannelVolumes(
 	LOG_API_ENTER(voice->audio)
 	FAudio_PlatformLockMutex(voice->volumeLock);
 	LOG_MUTEX_LOCK(voice->audio, voice->volumeLock)
-	FAudio_memcpy(
+	memcpy(
 		pVolumes,
 		voice->channelVolume,
 		sizeof(float) * Channels
@@ -2182,7 +2182,7 @@ uint32_t FAudioVoice_SetOutputMatrix(
 	FAudio_PlatformLockMutex(voice->volumeLock);
 	LOG_MUTEX_LOCK(voice->audio, voice->volumeLock)
 
-	FAudio_memcpy(
+	memcpy(
 		voice->sendCoefficients[i],
 		pLevelMatrix,
 		sizeof(float) * SourceChannels * DestinationChannels
@@ -2254,7 +2254,7 @@ void FAudioVoice_GetOutputMatrix(
 	}
 
 	/* Get the matrix values, finally */
-	FAudio_memcpy(
+	memcpy(
 		pLevelMatrix,
 		voice->sendCoefficients[i],
 		sizeof(float) * SourceChannels * DestinationChannels
@@ -2701,14 +2701,14 @@ uint32_t FAudioSourceVoice_SubmitSourceBuffer(
 
 	/* Allocate, now that we have valid input */
 	entry = (FAudioBufferEntry*) voice->audio->pMalloc(sizeof(FAudioBufferEntry));
-	FAudio_memcpy(&entry->buffer, pBuffer, sizeof(FAudioBuffer));
+	memcpy(&entry->buffer, pBuffer, sizeof(FAudioBuffer));
 	entry->buffer.PlayBegin = playBegin;
 	entry->buffer.PlayLength = playLength;
 	entry->buffer.LoopBegin = loopBegin;
 	entry->buffer.LoopLength = loopLength;
 	if (pBufferWMA != NULL)
 	{
-		FAudio_memcpy(&entry->bufferWMA, pBufferWMA, sizeof(FAudioBufferWMA));
+		memcpy(&entry->bufferWMA, pBufferWMA, sizeof(FAudioBufferWMA));
 	}
 	entry->next = NULL;
 

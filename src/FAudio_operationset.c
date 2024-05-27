@@ -459,7 +459,7 @@ void FAudio_OPERATIONSET_QueueSetEffectParameters(
 	op->Data.SetEffectParameters.pParameters = voice->audio->pMalloc(
 		ParametersByteSize
 	);
-	FAudio_memcpy(
+	memcpy(
 		op->Data.SetEffectParameters.pParameters,
 		pParameters,
 		ParametersByteSize
@@ -486,7 +486,7 @@ void FAudio_OPERATIONSET_QueueSetFilterParameters(
 		OperationSet
 	);
 
-	FAudio_memcpy(
+	memcpy(
 		&op->Data.SetFilterParameters.Parameters,
 		pParameters,
 		sizeof(FAudioFilterParametersEXT)
@@ -514,7 +514,7 @@ void FAudio_OPERATIONSET_QueueSetOutputFilterParameters(
 	);
 
 	op->Data.SetOutputFilterParameters.pDestinationVoice = pDestinationVoice;
-	FAudio_memcpy(
+	memcpy(
 		&op->Data.SetOutputFilterParameters.Parameters,
 		pParameters,
 		sizeof(FAudioFilterParametersEXT)
@@ -567,7 +567,7 @@ void FAudio_OPERATIONSET_QueueSetChannelVolumes(
 	op->Data.SetChannelVolumes.pVolumes = voice->audio->pMalloc(
 		sizeof(float) * Channels
 	);
-	FAudio_memcpy(
+	memcpy(
 		op->Data.SetChannelVolumes.pVolumes,
 		pVolumes,
 		sizeof(float) * Channels
@@ -602,7 +602,7 @@ void FAudio_OPERATIONSET_QueueSetOutputMatrix(
 	op->Data.SetOutputMatrix.pLevelMatrix = voice->audio->pMalloc(
 		sizeof(float) * SourceChannels * DestinationChannels
 	);
-	FAudio_memcpy(
+	memcpy(
 		op->Data.SetOutputMatrix.pLevelMatrix,
 		pLevelMatrix,
 		sizeof(float) * SourceChannels * DestinationChannels
